@@ -1,0 +1,16 @@
+[
+{
+  "modid": "craftingoverhaul",
+  "name": "CraftingOverhaul",
+  "description": "Provides a replacement, advanced crafting interface",
+  "version": "PROTOTYPE",
+  "mcversion": "${mcversion}",
+  "url": "N/A",
+  "updateUrl": "",
+  "authorList": ["CosmicDan"],
+  "credits": "See description below",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
