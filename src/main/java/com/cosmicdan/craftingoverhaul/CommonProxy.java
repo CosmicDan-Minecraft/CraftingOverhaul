@@ -1,5 +1,9 @@
 package com.cosmicdan.craftingoverhaul;
 
+import com.cosmicdan.craftingoverhaul.Data.CraftingType;
+import com.cosmicdan.craftingoverhaul.eventhandlers.EntityEvents;
+import com.cosmicdan.craftingoverhaul.eventhandlers.PlayerEvents;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -14,19 +18,18 @@ public class CommonProxy {
         
     }
     
-    
     public void init(FMLInitializationEvent event) {
         
     }
     
-    
     public void postInit(FMLPostInitializationEvent event) {
-
+        MinecraftForge.EVENT_BUS.register(new EntityEvents());
+        MinecraftForge.EVENT_BUS.register(new PlayerEvents());
     }
     
+    public void buildRecipeData(EntityPlayer player) {}
     
-    public void openJournal(EntityPlayer player) {
-    }
+    public void openCraftingGui(EntityPlayer player, CraftingType craftingType) {}
     
     public EntityPlayer getPlayerFromMessageContext(MessageContext ctx) {
         switch(ctx.side) {

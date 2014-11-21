@@ -6,6 +6,9 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.cosmicdan.craftingoverhaul.CommonProxy;
+import com.cosmicdan.craftingoverhaul.Data.CraftingType;
+import com.cosmicdan.craftingoverhaul.RecipeHandler;
+import com.cosmicdan.craftingoverhaul.client.gui.CraftingGui;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -27,6 +30,16 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+    }
+    
+    public void buildRecipeData(EntityPlayer player) {
+        RecipeHandler.init();
+    }
+    
+    public void openCraftingGui(EntityPlayer player, CraftingType craftingType) {
+        // client-only hook command for when user presses right-click on their Journal (called from the Journal item class)
+        // remember - getMinecraft() only exists in the client!
+        Minecraft.getMinecraft().displayGuiScreen(new CraftingGui(player, craftingType));
     }
     
     @Override
