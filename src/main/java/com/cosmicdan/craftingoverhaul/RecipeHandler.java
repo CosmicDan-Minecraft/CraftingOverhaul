@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import scala.actors.threadpool.Arrays;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -35,7 +36,10 @@ public final class RecipeHandler {
     
     public static List<Recipe> recipes = new ArrayList<Recipe>();
     
-    public static void init() {
+    public static EntityPlayer player;
+    
+    public static void init(EntityPlayer player) {
+        RecipeHandler.player = player;
         List recipeList = CraftingManager.getInstance().getRecipeList();
         for (Object recipe : recipeList) {
             RecipeSize recipeType;
@@ -117,6 +121,16 @@ public final class RecipeHandler {
                 //System.out.println("Unhandled recipe from class " + recipe.getClass().toString());
             }
         }
+        
+        // obviously this is just a test!
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        recipesLoaded = true;
     }
     
     public void sortRecipes(SortOrder order) {

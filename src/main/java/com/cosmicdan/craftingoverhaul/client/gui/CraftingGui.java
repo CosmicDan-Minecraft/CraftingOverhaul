@@ -24,15 +24,37 @@ import net.minecraft.util.ResourceLocation;
 
 public class CraftingGui extends GuiScreen {
     static final ResourceLocation craftingBackground = new ResourceLocation("craftingoverhaul:textures/gui/craftingGui.png");
+    static final ResourceLocation loadingSprite = new ResourceLocation("craftingoverhaul:textures/gui/loadingSprite.png");
     
     private final EntityPlayer player;
     private final CraftingType craftingType;
     private final CosmicScrollView scrollView;
     
-    private static final float uvFactor = 0.00390625F; // used by drawTexturedQuadWithUv
-    private static final int TEXTURE_SCALE = 4; // texture is 8x native, i.e. 2048x2048
+    private static final float uvFactor = 0.00390625F; // used by drawTexturedQuadWithUv 
+    private static final int TEXTURE_SCALE = 4; // bg texture is 4x native, i.e. 1024x1024
+    // total size of the texture
     private static final int BG_WIDTH = 768 / TEXTURE_SCALE;
     private static final int BG_HEIGHT = 768 / TEXTURE_SCALE;
+    // position of the scrolling content area
+    private static final int CONTENT_X = 36 / TEXTURE_SCALE;
+    private static final int CONTENT_Y = 72 / TEXTURE_SCALE;
+    // size of the scrolling content area
+    private static final int CONTENT_WIDTH = 584 / TEXTURE_SCALE;
+    private static final int CONTENT_HEIGHT = 616 / TEXTURE_SCALE;
+    // frame width / height for loader sprite (remember to manually scale this according to native 256x256)
+    private static final int LOADER_WIDTH = 128 / TEXTURE_SCALE;
+    private static final int LOADER_HEIGHT = 120 / TEXTURE_SCALE;
+    
+    // total frames for loader sprite (0-based)
+    private static final int LOADER_FRAMES = 5;
+    // frame delay for loader sprite (0-based)
+    private static final int LOADER_FRAMEDELAY = 2;
+    
+    // initial frame for loader sprite
+    private int loadingSpriteFrame = 0;
+    // initial frame delay count for loader sprite
+    private int loadingSpriteDelay = 0;
+    
 
     public CraftingGui(EntityPlayer player, CraftingType craftingType) {
         this.player = player;
@@ -59,7 +81,12 @@ public class CraftingGui extends GuiScreen {
         //GL11.glEnable(GL11.GL_BLEND);
         mc.renderEngine.bindTexture(craftingBackground);
         drawTexturedQuadWithUv(drawX, drawY, 0, 0, BG_WIDTH, BG_HEIGHT);
-        scrollView.init(drawX + 9, drawY + 18, 146, 154, 16, fontRendererObj);
+        if (!RecipeHandler.recipesLoaded) {
+            //fontRendererObj.drawString("Loading", drawX + 9, drawY + 18, 0xFFFFFF);
+            doLoading(drawX, drawY);
+            return;
+        }
+        scrollView.init(drawX + CONTENT_X, drawY + CONTENT_Y, CONTENT_WIDTH, CONTENT_HEIGHT, 16, fontRendererObj);
         for (Recipe recipe : RecipeHandler.recipes) {
             scrollView.addTextOnlyRow(recipe.recipeLabel, 0xFFFFFF);
         }
@@ -97,12 +124,6 @@ public class CraftingGui extends GuiScreen {
         scrollView.doScrollEvent(Mouse.getEventDWheel());
     }
     
-    public final void onMouseWheel(int dWheel) {
-        if (dWheel != 0) {
-            System.out.println(dWheel);
-        }
-    }
-    
     private void close() {
         //GL11.glDisable(GL11.GL_BLEND);
         mc.displayGuiScreen(null);
@@ -118,7 +139,16 @@ public class CraftingGui extends GuiScreen {
         tessellator.draw();
     }
     
-    public FontRenderer getFontRenderer() {
-        return fontRendererObj;
+    private void doLoading(int drawX, int drawY) {
+        mc.renderEngine.bindTexture(loadingSprite);
+        drawTexturedQuadWithUv(drawX + CONTENT_X + (CONTENT_WIDTH / 2) - (LOADER_WIDTH / 2), drawY + CONTENT_Y + (CONTENT_HEIGHT / 2) - (LOADER_HEIGHT / 2), 0 + (loadingSpriteFrame * LOADER_WIDTH), 0, LOADER_WIDTH, LOADER_HEIGHT);
+        loadingSpriteDelay++;
+        if (loadingSpriteDelay == LOADER_FRAMEDELAY) {
+            loadingSpriteDelay = 0;
+            loadingSpriteFrame++;
+            if (loadingSpriteFrame > LOADER_FRAMES) {
+                loadingSpriteFrame = 0;
+            }
+        }
     }
 }

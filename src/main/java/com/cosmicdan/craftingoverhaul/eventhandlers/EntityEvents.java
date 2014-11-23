@@ -10,11 +10,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EntityEvents {
     @SubscribeEvent
-    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+    public void onEntityJoinWorld(final EntityJoinWorldEvent event) {
         if(event.entity.worldObj.isRemote && event.entity instanceof EntityPlayer) {
-            String msg = StatCollector.translateToLocal("text.loadingrecipes");
-            ((EntityPlayer)event.entity).addChatMessage(new ChatComponentText(msg));
-            Main.proxy.buildRecipeData((EntityPlayer)event.entity);
+            new Thread(new Runnable() {
+                public void run() {
+                    Main.proxy.buildRecipeData((EntityPlayer)event.entity);
+                }
+            }).start();
         }
     }
 }

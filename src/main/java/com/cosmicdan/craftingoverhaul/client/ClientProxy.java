@@ -33,7 +33,7 @@ public class ClientProxy extends CommonProxy {
     }
     
     public void buildRecipeData(EntityPlayer player) {
-        RecipeHandler.init();
+        RecipeHandler.init(player);
     }
     
     public void openCraftingGui(EntityPlayer player, CraftingType craftingType) {
