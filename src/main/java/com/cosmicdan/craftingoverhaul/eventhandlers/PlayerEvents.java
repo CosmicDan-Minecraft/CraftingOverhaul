@@ -18,12 +18,12 @@ public class PlayerEvents {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
-        	Block blockUsed = event.world.getBlock(event.x, event.y, event.z);
+            Block blockUsed = event.world.getBlock(event.x, event.y, event.z);
             // TODO: check if "override crafting table" option is enabled
-        	if (blockUsed instanceof net.minecraft.block.BlockWorkbench) {
-        	    Main.proxy.openCraftingGui(event.entityPlayer, CraftingType.VANILLA_WORKBENCH);
-        		event.setCanceled(true);
-        	}
+            if (blockUsed instanceof net.minecraft.block.BlockWorkbench) {
+                Main.proxy.openCraftingGui(event.entityPlayer, CraftingType.VANILLA_WORKBENCH);
+                event.setCanceled(true);
+            }
         }
     }
 }

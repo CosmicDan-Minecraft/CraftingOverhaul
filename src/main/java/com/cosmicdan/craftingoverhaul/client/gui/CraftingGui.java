@@ -17,6 +17,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
@@ -82,19 +83,21 @@ public class CraftingGui extends GuiScreen {
         mc.renderEngine.bindTexture(craftingBackground);
         drawTexturedQuadWithUv(drawX, drawY, 0, 0, BG_WIDTH, BG_HEIGHT);
         if (!RecipeHandler.recipesLoaded) {
-            //fontRendererObj.drawString("Loading", drawX + 9, drawY + 18, 0xFFFFFF);
             doLoading(drawX, drawY);
             return;
         }
-        scrollView.init(drawX + CONTENT_X, drawY + CONTENT_Y, CONTENT_WIDTH, CONTENT_HEIGHT, 16, fontRendererObj);
+        // want to smooth-scale the text but this doesn't work
+        //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        scrollView.init(drawX + CONTENT_X, drawY + CONTENT_Y, CONTENT_WIDTH, CONTENT_HEIGHT, 18, fontRendererObj);
         for (Recipe recipe : RecipeHandler.recipes) {
-            scrollView.addTextOnlyRow(recipe.recipeLabel, 0xFFFFFF);
+            scrollView.addItemIconAndTextRow(recipe.recipeOutput, recipe.recipeLabel, 0xFFFFFF);
         }
         scrollView.done();
         int hoverIndex = scrollView.getHoveredRow(mouseX, mouseY);
         if (hoverIndex >= 0) {
-            //System.out.println(RecipeHandler.recipes.get(hoverIndex).recipeLabel);
             fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeLabel, 0, 0, 0xFFFFFF);
+            fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
         }
     }
     

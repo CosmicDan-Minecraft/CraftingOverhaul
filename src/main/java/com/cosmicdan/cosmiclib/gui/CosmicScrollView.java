@@ -11,6 +11,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 public class CosmicScrollView {
     private final static int ROW_X_PADDING = 4; // left padding for whole row
@@ -19,6 +25,8 @@ public class CosmicScrollView {
 
     // instanced (set once on creation)
     private final GuiScreen parent;
+    private final TextureManager renderEngine;
+    private final RenderItem itemRender;
     
     // initialized (set once per draw)
     private int x;
@@ -27,6 +35,7 @@ public class CosmicScrollView {
     private int height;
     private int rowHeight;
     private FontRenderer fontRendererObj;
+    private Tessellator tessellator;
     private int startX; // each row padding start
     private Minecraft mc;
     
@@ -41,6 +50,8 @@ public class CosmicScrollView {
      */
     public CosmicScrollView(GuiScreen parent) {
         this.parent = parent;
+        this.renderEngine = Minecraft.getMinecraft().renderEngine;
+        this.itemRender = new RenderItem();
         rowEntries = new ArrayList<RowEntry>();
     }
     
@@ -56,6 +67,7 @@ public class CosmicScrollView {
         this.height = contentHeight;
         this.rowHeight = rowHeight;
         this.fontRendererObj = fontRendererObj;
+        this.tessellator = Tessellator.instance;
         this.startX = x * 2 + ROW_X_PADDING;
         this.mc = parent.mc;
         this.contentYsize = 0;
@@ -78,6 +90,20 @@ public class CosmicScrollView {
     
     public void addTextOnlyRow(String text, int color) {
         fontRendererObj.drawString(text, startX, y * 2 + rowY + scrollY + ROW_Y_PADDING_TEXT, color); // multiply by 2 because we're scaled by half
+        incRow();
+    }
+    
+    /**
+     * Draw an item + text row
+     */
+    public void addItemIconAndTextRow(ItemStack item, String text, int color) {
+        itemRender.renderItemIntoGUI(null, renderEngine, item, startX, y * 2 + rowY + scrollY);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        fontRendererObj.drawString(text, startX + 20, y * 2 + rowY + scrollY + ROW_Y_PADDING_TEXT, color); // multiply by 2 because we're scaled by half
+        incRow();
+    }
+    
+    private void incRow() {
         rowY += rowHeight;
         contentYsize += rowHeight;
         rowEntries.add(new RowEntry(x, y, x + width, y + (contentYsize + scrollY) / 2));

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.cosmicdan.craftingoverhaul.RecipeComparator.RecipeOrder;
+
 import scala.actors.threadpool.Arrays;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,10 +28,6 @@ public final class RecipeHandler {
     
     public static enum RecipeStyles {
         LAZY, STRICT // lazy == shapeless
-    }
-    
-    public static enum SortOrder {
-        ALPHABYLABEL,
     }
     
     public static boolean recipesLoaded = false;
@@ -54,7 +52,8 @@ public final class RecipeHandler {
                         newRecipe.recipeItems,
                         newRecipe.getRecipeOutput(),
                         recipeType,
-                        RecipeStyles.LAZY
+                        RecipeStyles.LAZY,
+                        getResultClass(newRecipe.getRecipeOutput())
                     )
                 );
             } else 
@@ -70,7 +69,8 @@ public final class RecipeHandler {
                         Arrays.asList(newRecipe.recipeItems),
                         newRecipe.getRecipeOutput(),
                         recipeType,
-                        RecipeStyles.STRICT
+                        RecipeStyles.STRICT,
+                        getResultClass(newRecipe.getRecipeOutput())
                     )
                 );
             } else
@@ -85,7 +85,8 @@ public final class RecipeHandler {
                         newRecipe.getInput(),
                         newRecipe.getRecipeOutput(),
                         recipeType,
-                        RecipeStyles.LAZY
+                        RecipeStyles.LAZY,
+                        getResultClass(newRecipe.getRecipeOutput())
                     )
                 );
                 
@@ -101,7 +102,8 @@ public final class RecipeHandler {
                         Arrays.asList(newRecipe.getInput()),
                         newRecipe.getRecipeOutput(),
                         recipeType,
-                        RecipeStyles.STRICT
+                        RecipeStyles.STRICT,
+                        getResultClass(newRecipe.getRecipeOutput())
                     )
                 );
             } else
@@ -123,26 +125,26 @@ public final class RecipeHandler {
         }
         
         // obviously this is just a test!
+        /*
         try {
             Thread.sleep(6000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        }*/
         
+        sortRecipes(RecipeOrder.LABEL);
         recipesLoaded = true;
     }
     
-    public void sortRecipes(SortOrder order) {
-        if (order == SortOrder.ALPHABYLABEL) {
-            Collections.sort(recipes, new Comparator<Object>() {
-
-                @Override
-                public int compare(Object recipe1, Object recipe2) {
-                    // TODO Auto-generated method stub
-                    return 0;
-                }
-            });
-        }
+    private static Class getResultClass(ItemStack item) {
+        // TODO: Assign item categories based on their class
+        return item.getItem().getClass();
+    }
+    
+    public static void sortRecipes(RecipeOrder order) {
+        RecipeComparator recipeComparator = new RecipeComparator();
+        recipeComparator.setSortingBy(order);
+        Collections.sort(recipes, recipeComparator);
     }
 }
