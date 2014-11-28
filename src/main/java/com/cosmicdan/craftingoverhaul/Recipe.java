@@ -13,7 +13,7 @@ public class Recipe {
     public ItemStack recipeOutput;
     public RecipeHandler.RecipeSize recipeType;
     public RecipeHandler.RecipeStyles recipeStyle;
-    public Class recipeClass; // this may only be useful for debugging, not certain at this point
+    public Class<?> recipeClass; // this may only be useful for debugging, not certain at this point
     public RecipeHandler.RecipeCategories recipeCategory;
     
     
@@ -23,7 +23,7 @@ public class Recipe {
                   ItemStack recipeOutput, 
                   RecipeHandler.RecipeSize recipeType, 
                   RecipeHandler.RecipeStyles recipeStyle,
-                  Class recipeClass) {
+                  Class<?> recipeClass) {
         this.recipeName = recipeName;
         this.recipeLabel = recipeLabel;
         this.recipeInput = recipeInput; // remember to check if it's an instance of ItemStack before reading this (some Recipes use null instead of "")
@@ -67,7 +67,7 @@ public class Recipe {
     }
     
     private static boolean isInstanceOf(Object item, String... classPaths) {
-        Class matchedClass;
+        Class<?> matchedClass;
         for (String classPath : classPaths) {
             try {
                 matchedClass = Class.forName(getClassName(classPath));

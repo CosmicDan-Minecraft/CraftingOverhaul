@@ -3,15 +3,14 @@ package com.cosmicdan.craftingoverhaul;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.cosmicdan.craftingoverhaul.RecipeComparator.RecipeOrder;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeBookCloning;
 import net.minecraft.item.crafting.RecipeFireworks;
 import net.minecraft.item.crafting.RecipesArmorDyes;
@@ -42,7 +41,7 @@ public final class RecipeHandler {
     
     public static void init(EntityPlayer player) {
         RecipeHandler.player = player;
-        List recipeList = CraftingManager.getInstance().getRecipeList();
+        List<?> recipeList = CraftingManager.getInstance().getRecipeList();
         for (Object recipe : recipeList) {
             RecipeSize recipeType;
             if (recipe instanceof ShapelessRecipes) { 
@@ -50,10 +49,12 @@ public final class RecipeHandler {
                 recipeType = RecipeSize.SMALL;
                 if (newRecipe.getRecipeSize() > 4)
                     recipeType = RecipeSize.LARGE;
+                @SuppressWarnings("unchecked") // damn you Java/Mojang and your generic array shenanigans
+                List<Object> recipeInput = newRecipe.recipeItems;
                 recipes.add(new Recipe(
                         newRecipe.getRecipeOutput().getUnlocalizedName(),
                         newRecipe.getRecipeOutput().getDisplayName(),
-                        newRecipe.recipeItems,
+                        recipeInput,
                         newRecipe.getRecipeOutput(),
                         recipeType,
                         RecipeStyles.LAZY,
@@ -141,7 +142,7 @@ public final class RecipeHandler {
         recipesLoaded = true;
     }
     
-    private static Class getResultClass(ItemStack item) {
+    private static Class<? extends Item> getResultClass(ItemStack item) {
         // TODO: Assign item categories based on their class
         return item.getItem().getClass();
     }

@@ -5,18 +5,13 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.cosmicdan.craftingoverhaul.RecipeHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public class CosmicScrollView {
     private final static int ROW_X_PADDING = 4; // left padding for whole row
@@ -35,12 +30,12 @@ public class CosmicScrollView {
     private int height;
     private int rowHeight;
     private FontRenderer fontRendererObj;
-    private Tessellator tessellator;
+    //private Tessellator tessellator;
     private int startX; // each row padding start
     private Minecraft mc;
     
     // dynamic (set many per draw)
-    private int startY;
+    //private int startY;
     private int rowY = 0; // current Y-offset of row to draw on
     private int scrollY = 0;
     private int contentYsize = 0;
@@ -67,7 +62,7 @@ public class CosmicScrollView {
         this.height = contentHeight;
         this.rowHeight = rowHeight;
         this.fontRendererObj = fontRendererObj;
-        this.tessellator = Tessellator.instance;
+        //this.tessellator = Tessellator.instance;
         this.startX = x * 2 + ROW_X_PADDING;
         this.mc = parent.mc;
         this.contentYsize = 0;

@@ -1,34 +1,25 @@
 package com.cosmicdan.craftingoverhaul.client.gui;
 
-import java.util.List;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import com.cosmicdan.cosmiclib.gui.CosmicScrollView;
 import com.cosmicdan.craftingoverhaul.Data.CraftingType;
 import com.cosmicdan.craftingoverhaul.Recipe;
 import com.cosmicdan.craftingoverhaul.RecipeHandler;
 
-import cpw.mods.fml.client.GuiModOptionList;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.ResourceLocation;
 
 public class CraftingGui extends GuiScreen {
     static final ResourceLocation craftingBackground = new ResourceLocation("craftingoverhaul:textures/gui/craftingGui.png");
     static final ResourceLocation loadingSprite = new ResourceLocation("craftingoverhaul:textures/gui/loadingSprite.png");
     
-    private final EntityPlayer player;
-    private final CraftingType craftingType;
+    //private final EntityPlayer player;
+    //private final CraftingType craftingType;
     private final CosmicScrollView scrollView;
     private final boolean debugmode;
     
@@ -59,8 +50,8 @@ public class CraftingGui extends GuiScreen {
     
 
     public CraftingGui(EntityPlayer player, CraftingType craftingType) {
-        this.player = player;
-        this.craftingType = craftingType;
+        //this.player = player; //unused
+        //this.craftingType = craftingType; //unused
         scrollView = new CosmicScrollView(this);
         this.debugmode = true; // TODO: Base this on a config option
     }
@@ -102,7 +93,7 @@ public class CraftingGui extends GuiScreen {
             if (debugmode) {
                 fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeLabel, 0, 0, 0xFFFFFF);
                 fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
-                Class recipeClass = RecipeHandler.recipes.get(hoverIndex).recipeClass.getSuperclass();
+                Class<?> recipeClass = RecipeHandler.recipes.get(hoverIndex).recipeClass.getSuperclass();
                 int offset = 20;
                 while (recipeClass != null) {
                     fontRendererObj.drawString(recipeClass.getSimpleName(), 0, offset, 0xFFFFFF);

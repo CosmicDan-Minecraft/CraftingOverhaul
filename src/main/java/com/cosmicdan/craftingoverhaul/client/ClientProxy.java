@@ -2,8 +2,6 @@ package com.cosmicdan.craftingoverhaul.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.cosmicdan.craftingoverhaul.CommonProxy;
 import com.cosmicdan.craftingoverhaul.Data.CraftingType;
