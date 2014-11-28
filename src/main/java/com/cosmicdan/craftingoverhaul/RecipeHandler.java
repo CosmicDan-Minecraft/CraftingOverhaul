@@ -1,13 +1,13 @@
 package com.cosmicdan.craftingoverhaul;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.cosmicdan.craftingoverhaul.RecipeComparator.RecipeOrder;
 
-import scala.actors.threadpool.Arrays;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -70,7 +70,7 @@ public final class RecipeHandler {
                     new Recipe(
                             newRecipe.getRecipeOutput().getUnlocalizedName(),
                             newRecipe.getRecipeOutput().getDisplayName(),
-                        Arrays.asList(newRecipe.recipeItems),
+                        Arrays.asList((Object[])newRecipe.recipeItems),
                         newRecipe.getRecipeOutput(),
                         recipeType,
                         RecipeStyles.STRICT,
