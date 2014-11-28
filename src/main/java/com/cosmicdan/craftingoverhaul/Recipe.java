@@ -38,8 +38,6 @@ public class Recipe {
         // TODO: Implement some "intelligent" category detection based on heuristic reflection.
         if (recipeOutputItem instanceof ItemArmor)
             return RecipeHandler.RecipeCategories.ARMOR;
-        if (recipeOutputItem instanceof ItemBlock)
-            return RecipeHandler.RecipeCategories.BLOCKS;
         if (recipeOutputItem instanceof net.minecraftforge.common.IPlantable)
             return RecipeHandler.RecipeCategories.CROPS;
         if (recipeOutputItem instanceof ItemFood)
@@ -57,6 +55,8 @@ public class Recipe {
                 (recipeOutputItem instanceof ItemBow)
                 )
             return RecipeHandler.RecipeCategories.WEAPONS;
+        if (recipeOutputItem instanceof ItemBlock) // check for blocks last, since other types can extend it
+            return RecipeHandler.RecipeCategories.BLOCKS;
         return RecipeHandler.RecipeCategories.OTHER; // default
     }
 }
