@@ -6,3 +6,7 @@
 bin/
 eclipse/
 gradle/
+*
+!build.gradle
+!eclipse.cmd
+!README.md
