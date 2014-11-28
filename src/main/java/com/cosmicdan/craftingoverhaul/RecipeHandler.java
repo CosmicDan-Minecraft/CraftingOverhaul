@@ -30,6 +30,10 @@ public final class RecipeHandler {
         LAZY, STRICT // lazy == shapeless
     }
     
+    public static enum RecipeCategories {
+        OTHER, ARMOR, BLOCKS, CROPS, FOOD, MAPPING, TOOLS, WEAPONS, 
+    }
+    
     public static boolean recipesLoaded = false;
     
     public static List<Recipe> recipes = new ArrayList<Recipe>();

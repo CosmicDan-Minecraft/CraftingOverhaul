@@ -30,6 +30,7 @@ public class CraftingGui extends GuiScreen {
     private final EntityPlayer player;
     private final CraftingType craftingType;
     private final CosmicScrollView scrollView;
+    private final boolean debugmode;
     
     private static final float uvFactor = 0.00390625F; // used by drawTexturedQuadWithUv 
     private static final int TEXTURE_SCALE = 4; // bg texture is 4x native, i.e. 1024x1024
@@ -61,6 +62,7 @@ public class CraftingGui extends GuiScreen {
         this.player = player;
         this.craftingType = craftingType;
         scrollView = new CosmicScrollView(this);
+        this.debugmode = true; // TODO: Base this on a config option
     }
     
     @Override
@@ -96,8 +98,23 @@ public class CraftingGui extends GuiScreen {
         scrollView.done();
         int hoverIndex = scrollView.getHoveredRow(mouseX, mouseY);
         if (hoverIndex >= 0) {
-            fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeLabel, 0, 0, 0xFFFFFF);
-            fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
+            //// START DEBUG INFO
+            if (debugmode) {
+                fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeLabel, 0, 0, 0xFFFFFF);
+                fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
+                Class recipeClass = RecipeHandler.recipes.get(hoverIndex).recipeClass.getSuperclass();
+                int offset = 20;
+                while (recipeClass != null) {
+                    fontRendererObj.drawString(recipeClass.getSimpleName(), 0, offset, 0xFFFFFF);
+                    offset += 10;
+                    recipeClass = recipeClass.getSuperclass();
+                }
+                String recipeCategory = "NO CATEGORY";
+                if (RecipeHandler.recipes.get(hoverIndex).recipeCategory != null)
+                    recipeCategory = RecipeHandler.recipes.get(hoverIndex).recipeCategory.toString();
+                fontRendererObj.drawString(recipeCategory, 0, offset + 10, 0xFFFFFF);
+            }
+            //// END DEBUG INFO
         }
     }
     
