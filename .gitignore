@@ -8,6 +8,6 @@ eclipse/
 gradle/
 *
 !build.gradle
-!eclipse.cmd
-!README.md
+!LICENSE.txt
 !merge_resources.cmd
+!README.md
