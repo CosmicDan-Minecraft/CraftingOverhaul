@@ -10,3 +10,4 @@ gradle/
 !build.gradle
 !eclipse.cmd
 !README.md
+!merge_resources.cmd
