@@ -8,4 +8,4 @@ CD %~dp0
 :: copy resources
 xcopy src\main\resources build\classes\main /E /I /Y
 :: copy lang assets
-xcopy src\main\java\assets build\classes\main /E /I /Y
+xcopy src\main\java\assets build\classes\main\assets /E /I /Y

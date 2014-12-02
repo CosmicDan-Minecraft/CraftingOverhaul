@@ -9,5 +9,5 @@ gradle/
 *
 !build.gradle
 !LICENSE.txt
-!merge_resources.cmd
+!preload.cmd
 !README.md
