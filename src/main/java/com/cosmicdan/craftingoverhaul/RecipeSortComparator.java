@@ -2,7 +2,7 @@ package com.cosmicdan.craftingoverhaul;
 
 import java.util.Comparator;
 
-public class RecipeComparator implements Comparator<Recipe> {
+public class RecipeSortComparator implements Comparator<Recipe> {
     public static enum RecipeOrder {
         LABEL, 
     }

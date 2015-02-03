@@ -2,7 +2,7 @@
 {
   "modid": "craftingoverhaul",
   "name": "CraftingOverhaul",
-  "description": "Provides a replacement, advanced crafting interface",
+  "description": "An alternative, advanced crafting interface",
   "version": "PROTOTYPE",
   "mcversion": "${mcversion}",
   "url": "N/A",

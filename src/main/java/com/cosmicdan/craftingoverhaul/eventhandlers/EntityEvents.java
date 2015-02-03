@@ -4,7 +4,7 @@ import com.cosmicdan.craftingoverhaul.Main;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class EntityEvents {
     @SubscribeEvent

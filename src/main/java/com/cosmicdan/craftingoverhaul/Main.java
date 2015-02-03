@@ -1,18 +1,20 @@
 package com.cosmicdan.craftingoverhaul;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = Main.MODID, version = Main.VERSION)
+@Mod(modid = Main.MODID, version = Main.VERSION, dependencies = Main.DEPS)
 public class Main
 {
     public static final String MODID = "craftingoverhaul";
     public static final String VERSION = "0.0.1";
+    public static final String DEPS = "required-after:cosmiclib;";
+    //public static final String DEPS = "";
     
     @Instance(value = MODID)
     public static Main instance;

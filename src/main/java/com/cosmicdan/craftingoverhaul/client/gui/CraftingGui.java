@@ -1,28 +1,24 @@
 package com.cosmicdan.craftingoverhaul.client.gui;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
-import com.cosmicdan.cosmiclib.gui.CosmicScrollView;
+import com.cosmicdan.cosmiclib.gui.GuiScreenScrolling;
 import com.cosmicdan.craftingoverhaul.Data.CraftingType;
 import com.cosmicdan.craftingoverhaul.Recipe;
 import com.cosmicdan.craftingoverhaul.RecipeHandler;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
-public class CraftingGui extends GuiScreen {
+public class CraftingGui extends GuiScreenScrolling {
     static final ResourceLocation craftingBackground = new ResourceLocation("craftingoverhaul:textures/gui/craftingGui.png");
     static final ResourceLocation loadingSprite = new ResourceLocation("craftingoverhaul:textures/gui/loadingSprite.png");
     
-    //private final EntityPlayer player;
-    //private final CraftingType craftingType;
-    private final CosmicScrollView scrollView;
     private final boolean debugmode;
-    
+
     private static final float uvFactor = 0.00390625F; // used by drawTexturedQuadWithUv 
     private static final int TEXTURE_SCALE = 4; // bg texture is 4x native, i.e. 1024x1024
     // total size of the texture
@@ -48,64 +44,78 @@ public class CraftingGui extends GuiScreen {
     // initial frame delay count for loader sprite
     private int loadingSpriteDelay = 0;
     
+    @Override
+    protected int[] scrollviewPadding() {
+        int[] padding = new int[2];
+        padding[0] = 4;
+        padding[1] = 3;
+        return padding;
+    }
+
+
+    @Override
+    protected int[] scrollviewAttr() {
+        int[] attr = new int[5];
+        attr[0] = (width - BG_WIDTH) / 2 + CONTENT_X;
+        attr[1] = (height - BG_HEIGHT) / 2 + CONTENT_Y;
+        attr[2] = CONTENT_WIDTH;
+        attr[3] = CONTENT_HEIGHT;
+        attr[4] = 18;
+        return attr;
+    }
+    
 
     public CraftingGui(EntityPlayer player, CraftingType craftingType) {
-        //this.player = player; //unused
-        //this.craftingType = craftingType; //unused
-        scrollView = new CosmicScrollView(this);
         this.debugmode = true; // TODO: Base this on a config option
     }
     
-    @Override
-    public void initGui() {
-        //craftingList.registerScrollButtons(this.buttonList, 7, 8);
-
-    }
     
     @Override
     public void onGuiClosed() {
-        //GL11.glDisable(GL11.GL_BLEND);
     }
     
     @Override
-    public void drawScreen(int mouseX, int mouseY, float renderPartials) {
-        final int drawX = (width - BG_WIDTH) / 2;
-        final int drawY = (height - BG_HEIGHT) / 2;
+    protected void onCreate() {
+        // nothing to do here
+    }
+    
+    @Override
+    public void onDraw(int mouseX, int mouseY, float renderPartials, int[] attr) {
+        
         //GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         //GL11.glEnable(GL11.GL_BLEND);
+        
         mc.renderEngine.bindTexture(craftingBackground);
-        drawTexturedQuadWithUv(drawX, drawY, 0, 0, BG_WIDTH, BG_HEIGHT);
+        drawTexturedQuadWithUv(attr[0] - CONTENT_X, attr[1] - CONTENT_Y, 0, 0, BG_WIDTH, BG_HEIGHT);
         if (!RecipeHandler.recipesLoaded) {
-            doLoading(drawX, drawY);
+            doLoading(attr[0] - CONTENT_X, attr[1] - CONTENT_Y); //TODO: Move this to a new class perhaps?
             return;
         }
-        // want to smooth-scale the text but this doesn't work
-        //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        //GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        scrollView.init(drawX + CONTENT_X, drawY + CONTENT_Y, CONTENT_WIDTH, CONTENT_HEIGHT, 18, fontRendererObj);
+    }
+    
+    @Override
+    protected void onAddRows() {
         for (Recipe recipe : RecipeHandler.recipes) {
-            scrollView.addItemIconAndTextRow(recipe.recipeOutput, recipe.recipeLabel, 0xFFFFFF);
+            addItemIconAndTextRow(recipe.recipeOutput, recipe.recipeLabel, 0xFFFFFF);
         }
-        scrollView.done();
-        int hoverIndex = scrollView.getHoveredRow(mouseX, mouseY);
-        if (hoverIndex >= 0) {
-            //// START DEBUG INFO
-            if (debugmode) {
-                fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeLabel, 0, 0, 0xFFFFFF);
-                fontRendererObj.drawString(RecipeHandler.recipes.get(hoverIndex).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
-                Class<?> recipeClass = RecipeHandler.recipes.get(hoverIndex).recipeClass.getSuperclass();
-                int offset = 20;
-                while (recipeClass != null) {
-                    fontRendererObj.drawString(recipeClass.getSimpleName(), 0, offset, 0xFFFFFF);
-                    offset += 10;
-                    recipeClass = recipeClass.getSuperclass();
-                }
-                String recipeCategory = "NO CATEGORY";
-                if (RecipeHandler.recipes.get(hoverIndex).recipeCategory != null)
-                    recipeCategory = RecipeHandler.recipes.get(hoverIndex).recipeCategory.toString();
-                fontRendererObj.drawString(recipeCategory, 0, offset + 10, 0xFFFFFF);
+    }
+    
+    @Override
+    protected void onRowHover(int index) {
+        if (debugmode) {
+            fontRendererObj.drawString(RecipeHandler.recipes.get(index).recipeLabel, 0, 0, 0xFFFFFF);
+            fontRendererObj.drawString(RecipeHandler.recipes.get(index).recipeClass.getSimpleName(), 0, 10, 0xFFFFFF);
+            Class<?> recipeClass = RecipeHandler.recipes.get(index).recipeClass.getSuperclass();
+            int offset = 20;
+            while (recipeClass != null) {
+                fontRendererObj.drawString(recipeClass.getSimpleName(), 0, offset, 0xFFFFFF);
+                offset += 10;
+                recipeClass = recipeClass.getSuperclass();
             }
-            //// END DEBUG INFO
+            String recipeCategory = "NO CATEGORY";
+            //if (RecipeHandler.recipes.get(hoverIndex).recipeCategory != null)
+            //    recipeCategory = RecipeHandler.recipes.get(hoverIndex).recipeCategory.toString();
+            fontRendererObj.drawString(recipeCategory, 0, offset + 10, 0xFFFFFF);
         }
     }
     
@@ -129,25 +139,20 @@ public class CraftingGui extends GuiScreen {
         }
     }
     
-    @Override
-    public void handleMouseInput() {
-        super.handleMouseInput();
-        scrollView.doScrollEvent(Mouse.getEventDWheel());
-    }
-    
     private void close() {
         //GL11.glDisable(GL11.GL_BLEND);
         mc.displayGuiScreen(null);
     }
     
     private void drawTexturedQuadWithUv(int x, int y, int u, int v, int width, int height){
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + height, 0, (double)((float)(u) * uvFactor), (double)((float)(v + height) * uvFactor));
-        tessellator.addVertexWithUV(x + width, y + height, 0, (double)((float)(u + width) * uvFactor), (double)((float)(v + height) * uvFactor));
-        tessellator.addVertexWithUV(x + width, y, 0, (double)((float)(u + width) * uvFactor), (double)((float)(v) * uvFactor));
-        tessellator.addVertexWithUV(x, y, 0, (double)((float)(u) * uvFactor), (double)((float)(v) * uvFactor));
-        tessellator.draw();
+        Tessellator t = Tessellator.getInstance();
+        WorldRenderer renderer = t.getWorldRenderer();
+        renderer.startDrawingQuads();
+        renderer.addVertexWithUV(x, y + height, 0, (double)((float)(u) * uvFactor), (double)((float)(v + height) * uvFactor));
+        renderer.addVertexWithUV(x + width, y + height, 0, (double)((float)(u + width) * uvFactor), (double)((float)(v + height) * uvFactor));
+        renderer.addVertexWithUV(x + width, y, 0, (double)((float)(u + width) * uvFactor), (double)((float)(v) * uvFactor));
+        renderer.addVertexWithUV(x, y, 0, (double)((float)(u) * uvFactor), (double)((float)(v) * uvFactor));
+        t.draw();
     }
     
     private void doLoading(int drawX, int drawY) {
